@@ -4,13 +4,16 @@ export PipeFlow, PlaneFlowSymm, PlaneFlow, AnnularDuct
 
 abstract type AbstractTexstanGeometry end
 
-struct BoundaryLayer2d <: AbstractTexstanGeometry
-    kgeom::Int
+struct BL2d <: AbstractTexstanGeometry
     x::Vector{Float64}
 end
 
 struct BLAxisymm <: AbstractTexstanGeometry
-    kgeom::Int
+    x::Vector{Float64}
+    r::Vector{Float64}
+end
+
+struct BLNozzle <: AbstractTexstanGeometry
     x::Vector{Float64}
     r::Vector{Float64}
 end
@@ -21,19 +24,30 @@ struct PipeFlow <: AbstractTexstanGeometry
 end
 
 struct PlaneFlowSymm <: AbstractTexstanGeometry
-    kgeom::Int
 end
 
 struct PlaneFlow <: AbstractTexstanGeometry
-    kgeom::Int
 end
 
 struct AnnularDuct <: AbstractTexstanGeometry
-    kgeom::Int
     ri::Float64
     ro::Float64
 end
 
+kgeom(geo::BL2d) = 1
+kgeom(geo::BLAxisymm) = 2
+kgeom(geo::BLNozzle) = 3
 
-kgeom(geo::AbstractTexstanGeometry) = geo.kgeom
+kgeom(geo::PipeFlow) = 4
+kgeom(geo::PlaneFlowSymm) = 5
+kgeom(geo::PlaneFlow) = 6
+kgeom(geo::AnnularDuct) = 7
 
+isinternal(geo::BL2d) = false
+isinternal(geo::BLAxisymm) = false
+isinternal(geo::BLNozzle) = false
+
+isinternal(geo::PipeFlow) = true
+isinternal(geo::PlaneFlowSymm) = true
+isinternal(geo::PlaneFlow) = true
+isinternal(geo::AnnularDuct) = true
